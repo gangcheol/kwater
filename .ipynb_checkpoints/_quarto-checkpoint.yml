@@ -2,7 +2,7 @@ project:
   type: website
   output-dir : docs  
 website:
-  title: "kwater"
+  title: "수로뻥~!"
   page-navigation: true
   navbar:
     right:
