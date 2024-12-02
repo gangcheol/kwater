@@ -59,6 +59,18 @@
     "href": "index.html",
     "title": "수로뻥~!",
     "section": "",
-    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\nAug 15, 2022\n\n\n00. Quarto Guide\n\n\nGC \n\n\n\n\n\nNo matching items"
+    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\nDec 2, 2024\n\n\n00. EDA (1)\n\n\nGC \n\n\n\n\nAug 15, 2022\n\n\n00. Quarto Guide\n\n\nGC \n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/00. EDA/2024-12-02-00. EDA (1).html",
+    "href": "posts/00. EDA/2024-12-02-00. EDA (1).html",
+    "title": "00. EDA (1)",
+    "section": "",
+    "text": "import\n\nimport plotly.express as px\nimport plotly.io as pio\npio.renderers.default = \"plotly_mimetype+notebook_connected\"\nimport numpy as np\nimport pandas as pd\n\n\n\n공모전 개요\n1 평가 데이터에서 최대 1주일 분량의 분 단위 입력 데이터를 바탕으로 T+1분 시점의 이상 여부를 감지\n2 관망 구조 내 존재하는 각각의 압력계(P)에 대해 이상을 감지할 수 있어야 한다.\n\n\nData load\n\ntrain_a = pd.read_csv(\"D:/projects/kwater_data/open/train/TRAIN_A.csv\")\ntrain_b = pd.read_csv(\"D:/projects/kwater_data/open/train/TRAIN_B.csv\")\n\n\ntrain_a.columns\n\nIndex(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'M1', 'M2', 'M3', 'M4', 'M5',\n       'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14', 'P1', 'P2',\n       'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13',\n       'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23',\n       'P24', 'P25', 'P26', 'anomaly', 'P1_flag', 'P2_flag', 'P3_flag',\n       'P4_flag', 'P5_flag', 'P6_flag', 'P7_flag', 'P8_flag', 'P9_flag',\n       'P10_flag', 'P11_flag', 'P12_flag', 'P13_flag', 'P14_flag', 'P15_flag',\n       'P16_flag', 'P17_flag', 'P18_flag', 'P19_flag', 'P20_flag', 'P21_flag',\n       'P22_flag', 'P23_flag', 'P24_flag', 'P25_flag', 'P26_flag'],\n      dtype='object')\n\n\n\n#train_a.head()\n\n\ntrain_b.columns\n\nIndex(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6',\n       'P7', 'P8', 'P9', 'P10', 'anomaly', 'P1_flag', 'P2_flag', 'P3_flag',\n       'P4_flag', 'P5_flag', 'P6_flag', 'P7_flag', 'P8_flag', 'P9_flag',\n       'P10_flag'],\n      dtype='object')\n\n\n\n#train_b.head()\n\n\ntest_c = pd.read_csv(\"D:/projects/kwater_data/open/test/C/TEST_C_0000.csv\")\ntest_ｄ = pd.read_csv(\"D:/projects/kwater_data/open/test/D/TEST_D_0000.csv\")\n\n\ntest_c.columns\n\nIndex(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'M1', 'M2',\n       'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'P1', 'P2', 'P3', 'P4',\n       'P5', 'P6', 'P7', 'P8'],\n      dtype='object')\n\n\n\ntest_d.columns\n\nIndex(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'M1', 'M2', 'M3', 'M4', 'M5',\n       'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'P1', 'P2', 'P3', 'P4', 'P5',\n       'P6'],\n      dtype='object')\n\n\n\n\n\nDo next\n1 지홍이형이 간단 모델 돌려온 거 보고 인사이트를 얻자",
+    "crumbs": [
+      "Posts",
+      "00. EDA",
+      "00. EDA (1)"
+    ]
   }
 ]
