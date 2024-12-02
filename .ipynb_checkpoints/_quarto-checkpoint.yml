@@ -1,0 +1,19 @@
+project:
+  type: website
+  output-dir : docs  
+website:
+  title: "kwater"
+  page-navigation: true
+  navbar:
+    right:
+      - icon : github
+        href : https://github.com/gangcheol/
+  sidebar:
+    style: "docked"
+    search: True
+    contents: auto
+    
+format:
+  html:
+    theme : materia
+    css : styles.css
