@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="GC">
+<meta name="dcterms.date" content="2024-12-11">
 
-<title>수로뻥~! - import</title>
+<title>수로뻥~! - 00. Anomaly Transfomer Basic</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -139,7 +141,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../posts/2023-07-31-00. Quarto Guide.html">Posts</a></li><li class="breadcrumb-item"><a href="../../posts/01. Modeling/modeiling (1).html">01. Modeling</a></li><li class="breadcrumb-item"><a href="../../posts/01. Modeling/modeiling (1).html">import</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../posts/2023-07-31-00. Quarto Guide.html">Posts</a></li><li class="breadcrumb-item"><a href="../../posts/01. Modeling/modeiling (1).html">01. Modeling</a></li><li class="breadcrumb-item"><a href="../../posts/01. Modeling/modeiling (1).html">00. Anomaly Transfomer Basic</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -203,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../posts/01. Modeling/modeiling (1).html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">import</span></a>
+ <span class="menu-text">00. Anomaly Transfomer Basic</span></a>
   </div>
 </li>
       </ul>
@@ -220,7 +222,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#anomaly-transformer-모델-정의" id="toc-anomaly-transformer-모델-정의" class="nav-link active" data-scroll-target="#anomaly-transformer-모델-정의">1. Anomaly Transformer 모델 정의</a></li>
+  <li><a href="#import" id="toc-import" class="nav-link active" data-scroll-target="#import">import</a></li>
+  <li><a href="#anomaly-transformer-모델-정의" id="toc-anomaly-transformer-모델-정의" class="nav-link" data-scroll-target="#anomaly-transformer-모델-정의">1. Anomaly Transformer 모델 정의</a></li>
   <li><a href="#데이터-준비" id="toc-데이터-준비" class="nav-link" data-scroll-target="#데이터-준비">2. 데이터 준비</a></li>
   <li><a href="#모델-학습" id="toc-모델-학습" class="nav-link" data-scroll-target="#모델-학습">3. 모델 학습</a></li>
   <li><a href="#결과-시각화-및-이상-점수-계산" id="toc-결과-시각화-및-이상-점수-계산" class="nav-link" data-scroll-target="#결과-시각화-및-이상-점수-계산">4. 결과 시각화 및 이상 점수 계산</a></li>
@@ -231,16 +234,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../posts/2023-07-31-00. Quarto Guide.html">Posts</a></li><li class="breadcrumb-item"><a href="../../posts/01. Modeling/modeiling (1).html">01. Modeling</a></li><li class="breadcrumb-item"><a href="../../posts/01. Modeling/modeiling (1).html">import</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../posts/2023-07-31-00. Quarto Guide.html">Posts</a></li><li class="breadcrumb-item"><a href="../../posts/01. Modeling/modeiling (1).html">01. Modeling</a></li><li class="breadcrumb-item"><a href="../../posts/01. Modeling/modeiling (1).html">00. Anomaly Transfomer Basic</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">import</h1>
+<h1 class="title">00. Anomaly Transfomer Basic</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>GC </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 11, 2024</p>
+    </div>
+  </div>
   
     
   </div>
@@ -253,6 +268,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="7a8d63f8-e51c-4c31-aaef-d830b175a43e" class="cell" data-execution_count="158">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!pip install torch torchvision numpy matplotlib</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<section id="import" class="level1">
+<h1>import</h1>
 <div id="b9ca7a9e-f041-4d41-9fac-f4f80ca36616" class="cell" data-execution_count="159">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
@@ -263,6 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="70d4c12a-ddf8-4d23-8c77-f184e30d2b17" class="cell" data-execution_count="160">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
 <section id="anomaly-transformer-모델-정의" class="level1">
 <h1>1. Anomaly Transformer 모델 정의</h1>
 <div id="67b80052-11b6-46cd-b2fc-396f716684a2" class="cell" data-execution_count="161">
