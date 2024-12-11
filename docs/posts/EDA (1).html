@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="GC">
-<meta name="dcterms.date" content="2024-12-02">
+<meta name="dcterms.date" content="2024-12-12">
 
 <title>수로뻥~! - 00. EDA (1)</title>
 <style>
@@ -59,24 +59,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../posts/01. Modeling/modeiling (1).html" rel="next">
-<link href="../../posts/2023-07-31-00. Quarto Guide.html" rel="prev">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../posts/01. Modeling/modeiling (1).html" rel="next">
+<link href="../posts/2023-07-31-00. Quarto Guide.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -106,7 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed">
@@ -116,7 +116,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">수로뻥~!</span>
     </a>
   </div>
@@ -142,7 +142,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../posts/2023-07-31-00. Quarto Guide.html">Posts</a></li><li class="breadcrumb-item"><a href="../../posts/00. EDA/2024-12-02-00. EDA (1).html">00. EDA</a></li><li class="breadcrumb-item"><a href="../../posts/00. EDA/2024-12-02-00. EDA (1).html">00. EDA (1)</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../posts/2023-07-31-00. Quarto Guide.html">Posts</a></li><li class="breadcrumb-item"><a href="../posts/EDA (1).html">00. EDA (1)</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -173,39 +173,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../posts/2023-07-31-00. Quarto Guide.html" class="sidebar-item-text sidebar-link">
+  <a href="../posts/2023-07-31-00. Quarto Guide.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">00. Quarto Guide</span></a>
   </div>
 </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
- <span class="menu-text">00. EDA</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../posts/00. EDA/2024-12-02-00. EDA (1).html" class="sidebar-item-text sidebar-link active">
+  <a href="../posts/EDA (1).html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">00. EDA (1)</span></a>
   </div>
 </li>
-      </ul>
-  </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
  <span class="menu-text">01. Modeling</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../posts/01. Modeling/modeiling (1).html" class="sidebar-item-text sidebar-link">
+  <a href="../posts/01. Modeling/modeiling (1).html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">00. Anomaly Transfomer Basic</span></a>
   </div>
 </li>
@@ -223,23 +212,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#import" id="toc-import" class="nav-link active" data-scroll-target="#import">import</a></li>
-  <li><a href="#공모전-개요" id="toc-공모전-개요" class="nav-link" data-scroll-target="#공모전-개요">공모전 개요</a></li>
-  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load">Data load</a></li>
-  <li><a href="#do-next" id="toc-do-next" class="nav-link" data-scroll-target="#do-next">Do next</a></li>
+  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a></li>
+  <li><a href="#import" id="toc-import" class="nav-link" data-scroll-target="#import">import</a></li>
+  <li><a href="#data-load" id="toc-data-load" class="nav-link" data-scroll-target="#data-load">Data load</a>
+  <ul class="collapse">
+  <li><a href="#train" id="toc-train" class="nav-link" data-scroll-target="#train">(1) train</a></li>
+  <li><a href="#test" id="toc-test" class="nav-link" data-scroll-target="#test">(2) test</a></li>
+  </ul></li>
+  <li><a href="#data-set-분할" id="toc-data-set-분할" class="nav-link" data-scroll-target="#data-set-분할">Data set 분할</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../posts/2023-07-31-00. Quarto Guide.html">Posts</a></li><li class="breadcrumb-item"><a href="../../posts/00. EDA/2024-12-02-00. EDA (1).html">00. EDA</a></li><li class="breadcrumb-item"><a href="../../posts/00. EDA/2024-12-02-00. EDA (1).html">00. EDA (1)</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../posts/2023-07-31-00. Quarto Guide.html">Posts</a></li><li class="breadcrumb-item"><a href="../posts/EDA (1).html">00. EDA (1)</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">00. EDA (1)</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">EDA</div>
-  </div>
-  </div>
+</div>
 
 
 
@@ -255,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 2, 2024</p>
+      <p class="date">December 12, 2024</p>
     </div>
   </div>
   
@@ -267,88 +257,192 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="intro" class="level1">
+<h1>Intro</h1>
+<p><code>1</code> train data와 test data 분포를 살펴보고 <code>val_data</code> 만들기</p>
+<p><code>2</code> val_data를 평가 데이터로 사용해서 학습시킨 모델의 성능을 1차적으로 평가하기</p>
+</section>
 <section id="import" class="level1">
 <h1>import</h1>
-<div id="edce1da0-ba39-421c-a914-39f054350329" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.io <span class="im">as</span> pio</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>pio.renderers.default <span class="op">=</span> <span class="st">"plotly_mimetype+notebook_connected"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="73bb22e4-d8e6-44e8-94e0-388a9a401dac" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-</section>
-<section id="공모전-개요" class="level1">
-<h1>공모전 개요</h1>
-<p><code>1</code> 평가 데이터에서 최대 1주일 분량의 분 단위 입력 데이터를 바탕으로 <code>T+1</code>분 시점의 이상 여부를 감지</p>
-<p><code>2</code> 관망 구조 내 존재하는 각각의 압력계(P)에 대해 이상을 감지할 수 있어야 한다.</p>
 </section>
 <section id="data-load" class="level1">
 <h1>Data load</h1>
-<div id="8b18e480-d2ce-4f35-9e9e-8f95141eee60" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>train_a <span class="op">=</span> pd.read_csv(<span class="st">"D:/projects/kwater_data/open/train/TRAIN_A.csv"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>train_b <span class="op">=</span> pd.read_csv(<span class="st">"D:/projects/kwater_data/open/train/TRAIN_B.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="train" class="level2">
+<h2 class="anchored" data-anchor-id="train">(1) train</h2>
+<div id="8f4b1ede-c7aa-4cb2-a66b-afbf7b20c193" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>train_a <span class="op">=</span> pd.read_csv(<span class="st">"TRAIN_A.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>train_b <span class="op">=</span> pd.read_csv(<span class="st">"TRAIN_B.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="171c8777-7c50-472c-9d9d-d9a2530d4666" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>train_a.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>1</code> train_a : 24/05/27 - 24/06/26 까지의 데이터 셋</p>
+<p><code>2</code> train_b : 24/07/01 - 24/07/29 까지의 데이터 셋</p>
+<ul>
+<li>학습 데이터는 30일 데이터임</li>
+</ul>
+<div id="975761ef-19cc-4a5f-a5f3-d9c6cb0d6c24" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>train_a[<span class="st">"timestamp"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
-<pre><code>Index(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'M1', 'M2', 'M3', 'M4', 'M5',
-       'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14', 'P1', 'P2',
-       'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13',
-       'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23',
-       'P24', 'P25', 'P26', 'anomaly', 'P1_flag', 'P2_flag', 'P3_flag',
-       'P4_flag', 'P5_flag', 'P6_flag', 'P7_flag', 'P8_flag', 'P9_flag',
-       'P10_flag', 'P11_flag', 'P12_flag', 'P13_flag', 'P14_flag', 'P15_flag',
-       'P16_flag', 'P17_flag', 'P18_flag', 'P19_flag', 'P20_flag', 'P21_flag',
-       'P22_flag', 'P23_flag', 'P24_flag', 'P25_flag', 'P26_flag'],
-      dtype='object')</code></pre>
+<pre><code>0        24/05/27 00:00
+1        24/05/27 00:01
+2        24/05/27 00:02
+3        24/05/27 00:03
+4        24/05/27 00:04
+              ...      
+44096    24/06/26 14:56
+44097    24/06/26 14:57
+44098    24/06/26 14:58
+44099    24/06/26 14:59
+44100    24/06/26 15:00
+Name: timestamp, Length: 44101, dtype: object</code></pre>
 </div>
 </div>
-<div id="6a77595e-e708-4fc9-b804-787384502768" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>train_a.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
-<pre><code>(44101, 73)</code></pre>
+<div id="1ac8f1ca-5f80-4581-bda8-f9a75015a494" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>train_b[<span class="st">"timestamp"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>0         2024-07-01 0:00
+1         2024-07-01 0:01
+2         2024-07-01 0:02
+3         2024-07-01 0:03
+4         2024-07-01 0:04
+               ...       
+41755    2024-07-29 23:55
+41756    2024-07-29 23:56
+41757    2024-07-29 23:57
+41758    2024-07-29 23:58
+41759    2024-07-29 23:59
+Name: timestamp, Length: 41760, dtype: object</code></pre>
 </div>
 </div>
-<div id="abef844f-261f-4ebf-b7f1-5af6592908a3" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>train_b.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
-<pre><code>Index(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6',
-       'P7', 'P8', 'P9', 'P10', 'anomaly', 'P1_flag', 'P2_flag', 'P3_flag',
-       'P4_flag', 'P5_flag', 'P6_flag', 'P7_flag', 'P8_flag', 'P9_flag',
-       'P10_flag'],
-      dtype='object')</code></pre>
+<p><code>-</code> 이상치 분포 확인 결과 분포가 극악이다…</p>
+<ul>
+<li><p>거의 1400:1의 분포임</p></li>
+<li><p>나중에 임계치 설정할 때 진짜 임계치를 높게 설정해야할 듯하다.</p></li>
+</ul>
+<div id="00c80cda-b350-4d48-84ee-87e301b610dd" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>train_a.anomaly.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>anomaly
+0    44071
+1       30
+Name: count, dtype: int64</code></pre>
 </div>
 </div>
-<div id="3afac62f-3331-4f62-b0c3-c497c63775c0" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#train_b.head()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div id="6a2ec9ad-1193-49d4-82db-27942455d57c" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>test_c <span class="op">=</span> pd.read_csv(<span class="st">"D:/projects/kwater_data/open/test/C/TEST_C_0000.csv"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>test_ｄ <span class="op">=</span> pd.read_csv(<span class="st">"D:/projects/kwater_data/open/test/D/TEST_D_0000.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div id="1f217cef-4280-429b-ab57-ae6c4fd78d26" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>test_c.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
-<pre><code>Index(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'M1', 'M2',
-       'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'P1', 'P2', 'P3', 'P4',
-       'P5', 'P6', 'P7', 'P8'],
-      dtype='object')</code></pre>
-</div>
-</div>
-<div id="45a6e87e-9623-470e-b08f-1945329740a4" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>test_d.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="b6c50246-575f-448d-aabb-50364072403b" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>train_b.anomaly.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
-<pre><code>Index(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'M1', 'M2', 'M3', 'M4', 'M5',
-       'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'P1', 'P2', 'P3', 'P4', 'P5',
-       'P6'],
-      dtype='object')</code></pre>
+<pre><code>anomaly
+0    41727
+1       33
+Name: count, dtype: int64</code></pre>
 </div>
 </div>
-<hr>
 </section>
-<section id="do-next" class="level1">
-<h1>Do next</h1>
-<p><code>1</code> 지홍이형이 간단 모델 돌려온 거 보고 인사이트를 얻자</p>
+<section id="test" class="level2">
+<h2 class="anchored" data-anchor-id="test">(2) test</h2>
+<div id="61bac693-aea3-4bed-be6b-9d0770a63973" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>test_c1 <span class="op">=</span> pd.read_csv(<span class="st">"test/C/TEST_C_0000.csv"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>test_c2 <span class="op">=</span> pd.read_csv(<span class="st">"test/C/TEST_C_2919.csv"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>test_d1 <span class="op">=</span> pd.read_csv(<span class="st">"test/D/TEST_D_0000.csv"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>test_d2 <span class="op">=</span> pd.read_csv(<span class="st">"test/D/TEST_D_2737.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="e110ea9e-325d-49f0-bc92-33e405df5eac" class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#test_c1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="bb8c5a83-46ed-4600-a916-5ff883899e5b" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>test_c1.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>(10080, 27)</code></pre>
+</div>
+</div>
+<div id="2bf02c75-2126-4e6c-b4c1-c14da1e7dca1" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>test_c2.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>(10080, 27)</code></pre>
+</div>
+</div>
+<div id="6a659869-06e8-45f6-9c79-b75a41eaeae0" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>test_d1.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>(10080, 23)</code></pre>
+</div>
+</div>
+<div id="16ae78af-527b-40c4-b38e-395eb3aca889" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>test_d2.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>(9819, 23)</code></pre>
+</div>
+</div>
+<p><code>1</code> test data는 한 개의 파일이 대략 10,000개니까 추론 시 3,000,000개를 추론해야함</p>
+<p><code>2</code> 미친 짓임. 따라서 일단 val_data set을 생성해서 예측모델의 성능을 확보하는 게 맞는 것 같음</p>
+</section>
+</section>
+<section id="data-set-분할" class="level1">
+<h1>Data set 분할</h1>
+<p><code>1</code> 대회에서 제공해준 함수를 활용하기 위해 test data와 같은 폴더 형식을 유지해서 데이터를 분할하자.</p>
+<p><code>2</code> 그러기 위해선 일단 데이터를 <code>train_a</code>와 <code>train_b</code>를 8:2로 나누어 보고 이상치가 어떻게 분배되는지 확인</p>
+<div id="5b10a38c-f53f-4620-85fe-e40ae14b7ae5" class="cell" data-execution_count="50">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>val_range <span class="op">=</span> <span class="bu">int</span>(<span class="bu">len</span>(train_a)<span class="op">*</span><span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cb893555-62b5-4704-b3a6-af1452a42728" class="cell" data-execution_count="56">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>train_A <span class="op">=</span> train_a[: val_range ]</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>val_A <span class="op">=</span> train_a[val_range :]</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>train_B <span class="op">=</span> train_b[: val_range ]</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>val_B <span class="op">=</span> train_b[val_range :]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>3</code> OK, 그래도 Train B에서 이상치가 포함되어 다행인 듯..</p>
+<div id="ab5944e5-8d04-46cf-93c2-f5bae6a9219e" class="cell" data-execution_count="57">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>train_A.anomaly.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="57">
+<pre><code>anomaly
+0    35280
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<div id="579aff29-7acb-4aa3-bd66-d2c9124bb0c2" class="cell" data-execution_count="58">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>val_A.anomaly.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="58">
+<pre><code>anomaly
+0    8791
+1      30
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<div id="becb6a95-4861-43ae-940a-340458a064de" class="cell" data-execution_count="59">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>train_B.anomaly.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="59">
+<pre><code>anomaly
+0    35247
+1       33
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<div id="4e8f9c0a-e4a8-4040-b19b-18920694ba4d" class="cell" data-execution_count="60">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>val_B.anomaly.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="60">
+<pre><code>anomaly
+0    6480
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<div id="c50168a4-99df-48db-86ed-e7053f28ee1a" class="cell" data-execution_count="63">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>train_A.to_csv(<span class="st">"train_a.csv"</span>, index <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>train_A.to_csv(<span class="st">"train_a.csv"</span>, index <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>val_A.to_csv(<span class="st">"VAL_A.csv"</span>,index <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>val_B.to_csv(<span class="st">"VAL_B.csv"</span>,index <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="63">
+<pre><code>((8821, 73), (6480, 26))</code></pre>
+</div>
+</div>
 
 
 </section>
@@ -767,12 +861,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../posts/2023-07-31-00. Quarto Guide.html" class="pagination-link" aria-label="00. Quarto Guide">
+      <a href="../posts/2023-07-31-00. Quarto Guide.html" class="pagination-link" aria-label="00. Quarto Guide">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">00. Quarto Guide</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../posts/01. Modeling/modeiling (1).html" class="pagination-link" aria-label="00. Anomaly Transfomer Basic">
+      <a href="../posts/01. Modeling/modeiling (1).html" class="pagination-link" aria-label="00. Anomaly Transfomer Basic">
         <span class="nav-page-text">00. Anomaly Transfomer Basic</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>

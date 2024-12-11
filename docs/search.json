@@ -1,5 +1,57 @@
 [
   {
+    "objectID": "posts/EDA (1).html",
+    "href": "posts/EDA (1).html",
+    "title": "00. EDA (1)",
+    "section": "",
+    "text": "1 train data와 test data 분포를 살펴보고 val_data 만들기\n2 val_data를 평가 데이터로 사용해서 학습시킨 모델의 성능을 1차적으로 평가하기",
+    "crumbs": [
+      "Posts",
+      "00. EDA (1)"
+    ]
+  },
+  {
+    "objectID": "posts/EDA (1).html#train",
+    "href": "posts/EDA (1).html#train",
+    "title": "00. EDA (1)",
+    "section": "(1) train",
+    "text": "(1) train\n\ntrain_a = pd.read_csv(\"TRAIN_A.csv\")\ntrain_b = pd.read_csv(\"TRAIN_B.csv\")\n\n1 train_a : 24/05/27 - 24/06/26 까지의 데이터 셋\n2 train_b : 24/07/01 - 24/07/29 까지의 데이터 셋\n\n학습 데이터는 30일 데이터임\n\n\ntrain_a[\"timestamp\"]\n\n0        24/05/27 00:00\n1        24/05/27 00:01\n2        24/05/27 00:02\n3        24/05/27 00:03\n4        24/05/27 00:04\n              ...      \n44096    24/06/26 14:56\n44097    24/06/26 14:57\n44098    24/06/26 14:58\n44099    24/06/26 14:59\n44100    24/06/26 15:00\nName: timestamp, Length: 44101, dtype: object\n\n\n\ntrain_b[\"timestamp\"]\n\n0         2024-07-01 0:00\n1         2024-07-01 0:01\n2         2024-07-01 0:02\n3         2024-07-01 0:03\n4         2024-07-01 0:04\n               ...       \n41755    2024-07-29 23:55\n41756    2024-07-29 23:56\n41757    2024-07-29 23:57\n41758    2024-07-29 23:58\n41759    2024-07-29 23:59\nName: timestamp, Length: 41760, dtype: object\n\n\n- 이상치 분포 확인 결과 분포가 극악이다…\n\n거의 1400:1의 분포임\n나중에 임계치 설정할 때 진짜 임계치를 높게 설정해야할 듯하다.\n\n\ntrain_a.anomaly.value_counts()\n\nanomaly\n0    44071\n1       30\nName: count, dtype: int64\n\n\n\ntrain_b.anomaly.value_counts()\n\nanomaly\n0    41727\n1       33\nName: count, dtype: int64",
+    "crumbs": [
+      "Posts",
+      "00. EDA (1)"
+    ]
+  },
+  {
+    "objectID": "posts/EDA (1).html#test",
+    "href": "posts/EDA (1).html#test",
+    "title": "00. EDA (1)",
+    "section": "(2) test",
+    "text": "(2) test\n\ntest_c1 = pd.read_csv(\"test/C/TEST_C_0000.csv\")\ntest_c2 = pd.read_csv(\"test/C/TEST_C_2919.csv\")\n\ntest_d1 = pd.read_csv(\"test/D/TEST_D_0000.csv\")\ntest_d2 = pd.read_csv(\"test/D/TEST_D_2737.csv\")\n\n\n#test_c1\n\n\ntest_c1.shape\n\n(10080, 27)\n\n\n\ntest_c2.shape\n\n(10080, 27)\n\n\n\ntest_d1.shape\n\n(10080, 23)\n\n\n\ntest_d2.shape\n\n(9819, 23)\n\n\n1 test data는 한 개의 파일이 대략 10,000개니까 추론 시 3,000,000개를 추론해야함\n2 미친 짓임. 따라서 일단 val_data set을 생성해서 예측모델의 성능을 확보하는 게 맞는 것 같음",
+    "crumbs": [
+      "Posts",
+      "00. EDA (1)"
+    ]
+  },
+  {
+    "objectID": "posts/01. Modeling/modeiling (1).html",
+    "href": "posts/01. Modeling/modeiling (1).html",
+    "title": "00. Anomaly Transfomer Basic",
+    "section": "",
+    "text": "#!pip install torch torchvision numpy matplotlib\n\n\nimport\n\nimport torch\nimport torch.nn as nn\nimport torch.optim as optim\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n\ndevice = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\n\n\n\n1. Anomaly Transformer 모델 정의\n\nclass AnomalyTransformer(nn.Module):\n    def __init__(self, input_dim, seq_len, num_heads, num_layers, dropout=0.1):\n        super(AnomalyTransformer, self).__init__()\n        self.input_dim = input_dim\n        self.seq_len = seq_len\n        self.num_heads = num_heads\n\n        # Embedding Layer\n        self.embedding = nn.Linear(input_dim, input_dim)\n\n        # Positional Encoding\n        self.positional_encoding = nn.Parameter(torch.randn(1, seq_len, input_dim))\n\n        # Transformer Encoder\n        encoder_layer = nn.TransformerEncoderLayer(d_model=input_dim, nhead=num_heads, dropout=dropout)\n        self.transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)\n\n        # Attention Score Calculation\n        self.attention_fc = nn.Linear(input_dim, seq_len)  # 이 부분의 출력 크기를 확인\n\n        # Discrepancy Calculation\n        self.discrepancy_fc = nn.Linear(seq_len * seq_len, 1)  # attention_map의 펼친 차원을 입력\n\n    def forward(self, x):\n        \"\"\"\n        Input shape: (batch_size, seq_len, input_dim)\n        Output: (batch_size, 1) - Anomaly scores\n        \"\"\"\n        batch_size, seq_len, _ = x.size()\n        assert seq_len == self.seq_len, f\"Expected seq_len={self.seq_len}, but got seq_len={seq_len}\"\n\n        # Embedding + Positional Encoding\n        x = self.embedding(x) + self.positional_encoding\n\n        # Transformer Encoder\n        x = self.transformer_encoder(x)\n\n        # Attention Score Calculation\n        attention_map = torch.matmul(x, x.transpose(1, 2)) / self.num_heads  # (batch_size, seq_len, seq_len)\n\n        # Flatten the attention map for fully connected layer\n        attention_flat = attention_map.view(batch_size, -1)  # (batch_size, seq_len * seq_len)\n        discrepancy = self.discrepancy_fc(attention_flat)  # (batch_size, 1)\n\n        return discrepancy\n\n\n\n2. 데이터 준비\n\nimport numpy as np\nimport torch\n\n# Dummy 데이터 생성\ndef create_dummy_data(num_samples=1000, sequence_length=30, feature_dim=10):\n    data = np.random.normal(size=(num_samples, sequence_length, feature_dim))\n    labels = np.random.choice([0, 1], size=num_samples, p = [0.95, 0.05])  # 정상(0), 이상(1) 레이블\n    return data, labels\n\n# 데이터 로드\nsequence_length = 30\nfeature_dim = 12\nnum_samples = 1000\n\ndata, labels = create_dummy_data(num_samples, sequence_length, feature_dim)\n\n# PyTorch 텐서로 변환\ndata_tensor = torch.tensor(data, dtype=torch.float32)\nlabels_tensor = torch.tensor(labels, dtype=torch.float32)\n\n\nlabels_tensor.unique(return_counts = True)\n\n(tensor([0., 1.]), tensor([956,  44]))\n\n\n\n# 데이터 크기 확인\nprint(f\"Input shape before: {data_tensor.shape}\")\n\n# 필요 시 크기 조정\nif len(data_tensor.shape) == 2:\n    data_tensor = data_tensor.unsqueeze(-1)  # (batch_size, seq_len, input_dim)\n\nprint(f\"Input shape after adjustment: {data_tensor.shape}\")\n\nInput shape before: torch.Size([1000, 30, 12])\nInput shape after adjustment: torch.Size([1000, 30, 12])\n\n\n\n\n3. 모델 학습\n\n# 모델 초기화\ninput_dim = feature_dim\nsequence_length = 30  # seq_len\nnum_heads = 2\nnum_layers = 3\ndropout = 0.1\n\nmodel = AnomalyTransformer(input_dim=input_dim, seq_len=sequence_length, num_heads=num_heads, num_layers=num_layers, dropout=dropout)\n\n# 손실 함수 및 옵티마이저\ncriterion = nn.MSELoss()\noptimizer = torch.optim.Adam(model.parameters(), lr=0.001)\n\n# 데이터 준비\ntrain_data = data_tensor[:800]\ntrain_labels = labels_tensor[:800]\n\n# 학습 루프\nepochs = 10\nbatch_size = 32\n\nfor epoch in range(epochs):\n    model.train()\n    epoch_loss = 0.0\n    for i in range(0, len(train_data), batch_size):\n        batch_data = train_data[i:i+batch_size]\n        optimizer.zero_grad()\n        scores = model(batch_data)\n        loss = criterion(scores, torch.zeros_like(scores))  # 정상 데이터를 기반으로 학습\n        loss.backward()\n        optimizer.step()\n        epoch_loss += loss.item()\n    print(f\"Epoch {epoch+1}/{epochs}, Loss: {epoch_loss / len(train_data)}\")\n\n/home/jupyter-rkdcjf8232/.local/lib/python3.10/site-packages/torch/nn/modules/transformer.py:379: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.self_attn.batch_first was not True(use batch_first for better inference performance)\n  warnings.warn(\n\n\nEpoch 1/10, Loss: 0.07684405563399195\nEpoch 2/10, Loss: 0.004637479749508202\nEpoch 3/10, Loss: 0.001985558783635497\nEpoch 4/10, Loss: 0.0015098400111310183\nEpoch 5/10, Loss: 0.0009821641095913948\nEpoch 6/10, Loss: 0.0008279510936699808\nEpoch 7/10, Loss: 0.0008808718901127577\nEpoch 8/10, Loss: 0.0007669400749728084\nEpoch 9/10, Loss: 0.0008671140717342496\nEpoch 10/10, Loss: 0.0007926417014095932\n\n\n\n\n4. 결과 시각화 및 이상 점수 계산\n\n# 평가 데이터\ntest_data = data_tensor[800:]\n\n# 이상 점수 계산\ndef calculate_anomaly_scores(data, model):\n    model.eval()\n    with torch.no_grad():\n        scores = model(data)\n    return scores\n\n# 점수 계산\nanomaly_scores = calculate_anomaly_scores(test_data, model).cpu().numpy()\n\n# 임계값 설정\nthreshold = np.percentile(anomaly_scores, 95)\n\n# 이상 여부 판정\npredicted_anomalies = anomaly_scores &gt; threshold\n\n# 시각화\nimport matplotlib.pyplot as plt\n\nplt.hist(anomaly_scores, bins=50, alpha=0.7, label=\"Anomaly Scores\")\nplt.axvline(threshold, color='r', linestyle='--', label=\"Threshold\")\nplt.legend()\nplt.title(\"Anomaly Scores Distribution\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\ndo next\n1 이제 이거를 우리 데이터를 끌고와서 적용시키기\n2 제출함수 작성 고민…",
+    "crumbs": [
+      "Posts",
+      "01. Modeling",
+      "00. Anomaly Transfomer Basic"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "수로뻥~!",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\nDec 12, 2024\n\n\n00. EDA (1)\n\n\nGC \n\n\n\n\nDec 11, 2024\n\n\n00. Anomaly Transfomer Basic\n\n\nGC \n\n\n\n\nAug 15, 2022\n\n\n00. Quarto Guide\n\n\nGC \n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "posts/2023-07-31-00. Quarto Guide.html",
     "href": "posts/2023-07-31-00. Quarto Guide.html",
     "title": "00. Quarto Guide",
@@ -52,37 +104,6 @@
     "crumbs": [
       "Posts",
       "00. Quarto Guide"
-    ]
-  },
-  {
-    "objectID": "posts/00. EDA/2024-12-02-00. EDA (1).html",
-    "href": "posts/00. EDA/2024-12-02-00. EDA (1).html",
-    "title": "00. EDA (1)",
-    "section": "",
-    "text": "import\n\nimport plotly.express as px\nimport plotly.io as pio\npio.renderers.default = \"plotly_mimetype+notebook_connected\"\nimport numpy as np\nimport pandas as pd\n\n\n\n공모전 개요\n1 평가 데이터에서 최대 1주일 분량의 분 단위 입력 데이터를 바탕으로 T+1분 시점의 이상 여부를 감지\n2 관망 구조 내 존재하는 각각의 압력계(P)에 대해 이상을 감지할 수 있어야 한다.\n\n\nData load\n\ntrain_a = pd.read_csv(\"D:/projects/kwater_data/open/train/TRAIN_A.csv\")\ntrain_b = pd.read_csv(\"D:/projects/kwater_data/open/train/TRAIN_B.csv\")\n\n\ntrain_a.columns\n\nIndex(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'M1', 'M2', 'M3', 'M4', 'M5',\n       'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12', 'M13', 'M14', 'P1', 'P2',\n       'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13',\n       'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23',\n       'P24', 'P25', 'P26', 'anomaly', 'P1_flag', 'P2_flag', 'P3_flag',\n       'P4_flag', 'P5_flag', 'P6_flag', 'P7_flag', 'P8_flag', 'P9_flag',\n       'P10_flag', 'P11_flag', 'P12_flag', 'P13_flag', 'P14_flag', 'P15_flag',\n       'P16_flag', 'P17_flag', 'P18_flag', 'P19_flag', 'P20_flag', 'P21_flag',\n       'P22_flag', 'P23_flag', 'P24_flag', 'P25_flag', 'P26_flag'],\n      dtype='object')\n\n\n\ntrain_a.shape\n\n(44101, 73)\n\n\n\ntrain_b.columns\n\nIndex(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6',\n       'P7', 'P8', 'P9', 'P10', 'anomaly', 'P1_flag', 'P2_flag', 'P3_flag',\n       'P4_flag', 'P5_flag', 'P6_flag', 'P7_flag', 'P8_flag', 'P9_flag',\n       'P10_flag'],\n      dtype='object')\n\n\n\n#train_b.head()\n\n\ntest_c = pd.read_csv(\"D:/projects/kwater_data/open/test/C/TEST_C_0000.csv\")\ntest_ｄ = pd.read_csv(\"D:/projects/kwater_data/open/test/D/TEST_D_0000.csv\")\n\n\ntest_c.columns\n\nIndex(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'M1', 'M2',\n       'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'P1', 'P2', 'P3', 'P4',\n       'P5', 'P6', 'P7', 'P8'],\n      dtype='object')\n\n\n\ntest_d.columns\n\nIndex(['timestamp', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'M1', 'M2', 'M3', 'M4', 'M5',\n       'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'P1', 'P2', 'P3', 'P4', 'P5',\n       'P6'],\n      dtype='object')\n\n\n\n\n\nDo next\n1 지홍이형이 간단 모델 돌려온 거 보고 인사이트를 얻자",
-    "crumbs": [
-      "Posts",
-      "00. EDA",
-      "00. EDA (1)"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "수로뻥~!",
-    "section": "",
-    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\nDec 11, 2024\n\n\n00. Anomaly Transfomer Basic\n\n\nGC \n\n\n\n\nDec 2, 2024\n\n\n00. EDA (1)\n\n\nGC \n\n\n\n\nAug 15, 2022\n\n\n00. Quarto Guide\n\n\nGC \n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "posts/01. Modeling/modeiling (1).html",
-    "href": "posts/01. Modeling/modeiling (1).html",
-    "title": "00. Anomaly Transfomer Basic",
-    "section": "",
-    "text": "#!pip install torch torchvision numpy matplotlib\n\n\nimport\n\nimport torch\nimport torch.nn as nn\nimport torch.optim as optim\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n\ndevice = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\n\n\n\n1. Anomaly Transformer 모델 정의\n\nclass AnomalyTransformer(nn.Module):\n    def __init__(self, input_dim, seq_len, num_heads, num_layers, dropout=0.1):\n        super(AnomalyTransformer, self).__init__()\n        self.input_dim = input_dim\n        self.seq_len = seq_len\n        self.num_heads = num_heads\n\n        # Embedding Layer\n        self.embedding = nn.Linear(input_dim, input_dim)\n\n        # Positional Encoding\n        self.positional_encoding = nn.Parameter(torch.randn(1, seq_len, input_dim))\n\n        # Transformer Encoder\n        encoder_layer = nn.TransformerEncoderLayer(d_model=input_dim, nhead=num_heads, dropout=dropout)\n        self.transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)\n\n        # Attention Score Calculation\n        self.attention_fc = nn.Linear(input_dim, seq_len)  # 이 부분의 출력 크기를 확인\n\n        # Discrepancy Calculation\n        self.discrepancy_fc = nn.Linear(seq_len * seq_len, 1)  # attention_map의 펼친 차원을 입력\n\n    def forward(self, x):\n        \"\"\"\n        Input shape: (batch_size, seq_len, input_dim)\n        Output: (batch_size, 1) - Anomaly scores\n        \"\"\"\n        batch_size, seq_len, _ = x.size()\n        assert seq_len == self.seq_len, f\"Expected seq_len={self.seq_len}, but got seq_len={seq_len}\"\n\n        # Embedding + Positional Encoding\n        x = self.embedding(x) + self.positional_encoding\n\n        # Transformer Encoder\n        x = self.transformer_encoder(x)\n\n        # Attention Score Calculation\n        attention_map = torch.matmul(x, x.transpose(1, 2)) / self.num_heads  # (batch_size, seq_len, seq_len)\n\n        # Flatten the attention map for fully connected layer\n        attention_flat = attention_map.view(batch_size, -1)  # (batch_size, seq_len * seq_len)\n        discrepancy = self.discrepancy_fc(attention_flat)  # (batch_size, 1)\n\n        return discrepancy\n\n\n\n2. 데이터 준비\n\nimport numpy as np\nimport torch\n\n# Dummy 데이터 생성\ndef create_dummy_data(num_samples=1000, sequence_length=30, feature_dim=10):\n    data = np.random.normal(size=(num_samples, sequence_length, feature_dim))\n    labels = np.random.choice([0, 1], size=num_samples, p = [0.95, 0.05])  # 정상(0), 이상(1) 레이블\n    return data, labels\n\n# 데이터 로드\nsequence_length = 30\nfeature_dim = 12\nnum_samples = 1000\n\ndata, labels = create_dummy_data(num_samples, sequence_length, feature_dim)\n\n# PyTorch 텐서로 변환\ndata_tensor = torch.tensor(data, dtype=torch.float32)\nlabels_tensor = torch.tensor(labels, dtype=torch.float32)\n\n\nlabels_tensor.unique(return_counts = True)\n\n(tensor([0., 1.]), tensor([956,  44]))\n\n\n\n# 데이터 크기 확인\nprint(f\"Input shape before: {data_tensor.shape}\")\n\n# 필요 시 크기 조정\nif len(data_tensor.shape) == 2:\n    data_tensor = data_tensor.unsqueeze(-1)  # (batch_size, seq_len, input_dim)\n\nprint(f\"Input shape after adjustment: {data_tensor.shape}\")\n\nInput shape before: torch.Size([1000, 30, 12])\nInput shape after adjustment: torch.Size([1000, 30, 12])\n\n\n\n\n3. 모델 학습\n\n# 모델 초기화\ninput_dim = feature_dim\nsequence_length = 30  # seq_len\nnum_heads = 2\nnum_layers = 3\ndropout = 0.1\n\nmodel = AnomalyTransformer(input_dim=input_dim, seq_len=sequence_length, num_heads=num_heads, num_layers=num_layers, dropout=dropout)\n\n# 손실 함수 및 옵티마이저\ncriterion = nn.MSELoss()\noptimizer = torch.optim.Adam(model.parameters(), lr=0.001)\n\n# 데이터 준비\ntrain_data = data_tensor[:800]\ntrain_labels = labels_tensor[:800]\n\n# 학습 루프\nepochs = 10\nbatch_size = 32\n\nfor epoch in range(epochs):\n    model.train()\n    epoch_loss = 0.0\n    for i in range(0, len(train_data), batch_size):\n        batch_data = train_data[i:i+batch_size]\n        optimizer.zero_grad()\n        scores = model(batch_data)\n        loss = criterion(scores, torch.zeros_like(scores))  # 정상 데이터를 기반으로 학습\n        loss.backward()\n        optimizer.step()\n        epoch_loss += loss.item()\n    print(f\"Epoch {epoch+1}/{epochs}, Loss: {epoch_loss / len(train_data)}\")\n\n/home/jupyter-rkdcjf8232/.local/lib/python3.10/site-packages/torch/nn/modules/transformer.py:379: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.self_attn.batch_first was not True(use batch_first for better inference performance)\n  warnings.warn(\n\n\nEpoch 1/10, Loss: 0.07684405563399195\nEpoch 2/10, Loss: 0.004637479749508202\nEpoch 3/10, Loss: 0.001985558783635497\nEpoch 4/10, Loss: 0.0015098400111310183\nEpoch 5/10, Loss: 0.0009821641095913948\nEpoch 6/10, Loss: 0.0008279510936699808\nEpoch 7/10, Loss: 0.0008808718901127577\nEpoch 8/10, Loss: 0.0007669400749728084\nEpoch 9/10, Loss: 0.0008671140717342496\nEpoch 10/10, Loss: 0.0007926417014095932\n\n\n\n\n4. 결과 시각화 및 이상 점수 계산\n\n# 평가 데이터\ntest_data = data_tensor[800:]\n\n# 이상 점수 계산\ndef calculate_anomaly_scores(data, model):\n    model.eval()\n    with torch.no_grad():\n        scores = model(data)\n    return scores\n\n# 점수 계산\nanomaly_scores = calculate_anomaly_scores(test_data, model).cpu().numpy()\n\n# 임계값 설정\nthreshold = np.percentile(anomaly_scores, 95)\n\n# 이상 여부 판정\npredicted_anomalies = anomaly_scores &gt; threshold\n\n# 시각화\nimport matplotlib.pyplot as plt\n\nplt.hist(anomaly_scores, bins=50, alpha=0.7, label=\"Anomaly Scores\")\nplt.axvline(threshold, color='r', linestyle='--', label=\"Threshold\")\nplt.legend()\nplt.title(\"Anomaly Scores Distribution\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\ndo next\n1 이제 이거를 우리 데이터를 끌고와서 적용시키기\n2 제출함수 작성 고민…",
-    "crumbs": [
-      "Posts",
-      "01. Modeling",
-      "00. Anomaly Transfomer Basic"
     ]
   }
 ]
