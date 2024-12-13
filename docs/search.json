@@ -33,6 +33,85 @@
     ]
   },
   {
+    "objectID": "posts/01. Modeling/modeling (2).html",
+    "href": "posts/01. Modeling/modeling (2).html",
+    "title": "01. Anomaly Transfomer (1)",
+    "section": "",
+    "text": "Code\nimport pandas as pd\nimport numpy as np\nimport math\n\nimport torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport torch.optim as optim\nfrom torch.utils.data import Dataset\nfrom omegaconf import DictConfig\n\nfrom types import SimpleNamespace\nfrom tqdm import tqdm\nimport os\nfrom typing import List, Dict, Union\nimport gc\nfrom torch.cuda.amp import autocast, GradScaler",
+    "crumbs": [
+      "Posts",
+      "01. Modeling",
+      "01. Anomaly Transfomer (1)"
+    ]
+  },
+  {
+    "objectID": "posts/01. Modeling/modeling (2).html#이상치근처-데이터만-추출",
+    "href": "posts/01. Modeling/modeling (2).html#이상치근처-데이터만-추출",
+    "title": "01. Anomaly Transfomer (1)",
+    "section": "(1) 이상치근처 데이터만 추출",
+    "text": "(1) 이상치근처 데이터만 추출\n\n\ntrain_a = pd.read_csv(\"TRAIN_A.csv\")[40000:].reset_index(drop=True)\ntrain_b = pd.read_csv(\"TRAIN_B.csv\")[35000:].reset_index(drop=True)\nprint(train_a.anomaly.value_counts())\nprint(train_b.anomaly.value_counts())\n\nanomaly\n0    4071\n1      30\nName: count, dtype: int64\nanomaly\n0    6727\n1      33\nName: count, dtype: int64",
+    "crumbs": [
+      "Posts",
+      "01. Modeling",
+      "01. Anomaly Transfomer (1)"
+    ]
+  },
+  {
+    "objectID": "posts/01. Modeling/modeling (2).html#파라미터-셋팅",
+    "href": "posts/01. Modeling/modeling (2).html#파라미터-셋팅",
+    "title": "01. Anomaly Transfomer (1)",
+    "section": "(2) 파라미터 셋팅",
+    "text": "(2) 파라미터 셋팅\n\nconfig1 = {\n    \"WINDOW_GIVEN\": 10,  # Extended sequence length\n    \"BATCH_SIZE\": 4,  # Reduced batch size for memory optimization\n    \"HIDDEN_DIM_LSTM\": 128,  # Increased hidden dimension\n    \"NUM_LAYERS\": 3,  # Increased number of layers\n    \"EPOCHS\": 10,  # More epochs for better training\n    \"LEARNING_RATE\": 1e-3,  # Standard learning rate\n    \"DEVICE\": rank,  # Using GPU\n    \"DROPOUT\": 0.2,  # Adjusted dropout\n}\n\nCFG = SimpleNamespace(**config1)",
+    "crumbs": [
+      "Posts",
+      "01. Modeling",
+      "01. Anomaly Transfomer (1)"
+    ]
+  },
+  {
+    "objectID": "posts/01. Modeling/modeling (2).html#data-준비",
+    "href": "posts/01. Modeling/modeling (2).html#data-준비",
+    "title": "01. Anomaly Transfomer (1)",
+    "section": "(3) data 준비",
+    "text": "(3) data 준비\n\nclass TimeSeriesDataset(Dataset):\n    def __init__(self, df: pd.DataFrame, stride: int = 1, inference: bool = False) -&gt; None:\n        \"\"\"\n        Args:\n            df: 입력 데이터프레임\n            stride: 윈도우 스트라이드\n            inference: 추론 모드 여부\n        \"\"\"\n        self.inference = inference\n        self.column_names = df.filter(regex='^P\\d+$').columns.tolist()\n        self.file_ids = df['file_id'].values if 'file_id' in df.columns else None\n\n        if inference:\n            self.values = df[self.column_names].values.astype(np.float32)\n            self._prepare_inference_data()\n        else:\n            self._prepare_training_data(df, stride)\n\n    def _normalize_columns(self, data: np.ndarray) -&gt; np.ndarray:\n        \"\"\"벡터화된 열 정규화\"\"\"\n        # Z-Score 정규화 적용\n        means = data.mean(axis=0, keepdims=True)\n        stds = data.std(axis=0, keepdims=True)\n        return (data - means) / (stds + 1e-8)\n\n    def _prepare_inference_data(self) -&gt; None:\n        \"\"\"추론 데이터 준비 - 단일 시퀀스\"\"\"\n        self.normalized_values = self._normalize_columns(self.values)\n\n    def _prepare_training_data(self, df: pd.DataFrame, stride: int) -&gt; None:\n        \"\"\"학습 데이터 준비 - 윈도우 단위\"\"\"\n        self.values = df[self.column_names].values.astype(np.float32)\n\n        # 시작 인덱스 계산 (stride 적용)\n        potential_starts = np.arange(0, len(df) - CFG.WINDOW_GIVEN, stride)\n\n        # 각 윈도우의 이상치 비율 조건 완화\n        accident_labels = df['anomaly'].values\n        valid_starts = [\n            idx for idx in potential_starts\n            if idx + CFG.WINDOW_GIVEN &lt; len(df) and  # 범위 체크\n            np.mean(accident_labels[idx:idx + CFG.WINDOW_GIVEN]) &lt;= 0.1  # 이상치 비율 조건\n        ]\n        self.start_idx = np.array(valid_starts)\n\n        # 유효한 윈도우들만 추출하여 정규화\n        windows = np.array([\n            self.values[i:i + CFG.WINDOW_GIVEN]\n            for i in self.start_idx\n        ])\n\n        # (윈도우 수, 윈도우 크기, 특성 수)로 한번에 정규화\n        self.input_data = np.stack([\n            self._normalize_columns(window) for window in windows\n        ])\n\n    def __len__(self) -&gt; int:\n        if self.inference:\n            return len(self.column_names)\n        return len(self.start_idx) * len(self.column_names)\n\n    def __getitem__(self, idx: int) -&gt; Dict[str, Union[str, torch.Tensor]]:\n        if self.inference:\n            col_idx = idx\n            col_name = self.column_names[col_idx]\n            col_data = self.normalized_values[:, col_idx]\n            file_id = self.file_ids[idx] if self.file_ids is not None else None\n            return {\n                \"column_name\": col_name,\n                \"input\": torch.from_numpy(col_data).unsqueeze(-1),  # (time_steps, 1)\n                \"file_id\": file_id\n            }\n\n        window_idx = idx // len(self.column_names)\n        col_idx = idx % len(self.column_names)\n\n        return {\n            \"column_name\": self.column_names[col_idx],\n            \"input\": torch.from_numpy(self.input_data[window_idx, :, col_idx]).unsqueeze(-1)\n        }\n\n\na. 시계열 데이터 생성\n\ntrain_dataset_A = TimeSeriesDataset(train_a, stride=60)\ntrain_dataset_B = TimeSeriesDataset(train_a, stride=60)\n\ntrain_dataset_A_B = torch.utils.data.ConcatDataset([train_dataset_A, train_dataset_B])\n\n\n\nb. data loader\n- 모델 학습 과정 시 각 step 마다 데이터를 batch size 크기로 분할하여 넣어 효과적이고 효율적인 학습 진행을 돕기 위해 사용\n\n데이터를 1개씩 넣으면 학습이 너무 오래 걸리고, 전체를 한 번에 넣으면 컴퓨터 자우너이 데이터를 감당할 수 없기 때문에 위 같은 방법을 사용\nDataLoader 객체는 일종의 generator 형태로, 인덱싱이 불가능하고 for문 순회 등의 방법을 통하여 분할된 데이터를 일일이 가져와야 한다.\n\n\ntrain_loader = torch.utils.data.DataLoader(train_dataset_A_B, \n                                            batch_size=CFG.BATCH_SIZE, \n                                            shuffle=True)",
+    "crumbs": [
+      "Posts",
+      "01. Modeling",
+      "01. Anomaly Transfomer (1)"
+    ]
+  },
+  {
+    "objectID": "posts/01. Modeling/modeling (2).html#추론-및-test-데이터-전처리-함수",
+    "href": "posts/01. Modeling/modeling (2).html#추론-및-test-데이터-전처리-함수",
+    "title": "01. Anomaly Transfomer (1)",
+    "section": "(1) 추론 및 test 데이터 전처리 함수",
+    "text": "(1) 추론 및 test 데이터 전처리 함수\n\ndef inference_test_files(MODEL, batch, device='cuda'):\n    MODEL.eval()\n    with torch.no_grad():\n        inputs = batch[\"input\"].to(device)\n        with autocast():  # Mixed Precision 활성화\n            original_hidden, reconstructed_hidden = MODEL(inputs)\n        reconstruction_loss = torch.mean((original_hidden - reconstructed_hidden) ** 2, dim=1).cpu().numpy()\n    return reconstruction_loss\n\ndef test_data_processing(test_directory):\n    test_files = [f for f in os.listdir(test_directory) if f.startswith(\"TEST\") and f.endswith(\".csv\")]\n    test_datasets = []\n    all_test_data = []\n\n    for filename in tqdm(test_files, desc='Processing test files'):\n        test_file = os.path.join(test_directory, filename)\n        df = pd.read_csv(test_file)\n        df['file_id'] = filename.replace('.csv', '')\n        individual_df = df[['timestamp', 'file_id'] + df.filter(like='P').columns.tolist()]\n        individual_dataset = TimeSeriesDataset(individual_df, inference=True)\n        test_datasets.append(individual_dataset)\n        all_test_data.append(df)\n\n    combined_dataset = torch.utils.data.ConcatDataset(test_datasets)\n\n    test_loader = torch.utils.data.DataLoader(\n        combined_dataset,\n        batch_size=CFG.BATCH_SIZE,\n        shuffle=False,\n        collate_fn=custom_collate_fn\n    )\n    return test_loader",
+    "crumbs": [
+      "Posts",
+      "01. Modeling",
+      "01. Anomaly Transfomer (1)"
+    ]
+  },
+  {
+    "objectID": "posts/01. Modeling/modeling (2).html#이상치-추론함수",
+    "href": "posts/01. Modeling/modeling (2).html#이상치-추론함수",
+    "title": "01. Anomaly Transfomer (1)",
+    "section": "(2) 이상치 추론함수",
+    "text": "(2) 이상치 추론함수\n\ndef detect_anomaly(MODEL, test_loader):\n    reconstruction_errors = []\n    for batch in tqdm(test_loader):\n        reconstruction_loss = inference_test_files(MODEL, batch, CFG.DEVICE)\n        for i in range(len(reconstruction_loss)):\n            reconstruction_errors.append({\n                \"ID\": batch[\"file_id\"][i],\n                \"column_name\": batch[\"column_name\"][i],\n                \"reconstruction_error\": reconstruction_loss[i]\n            })\n\n    errors_df = pd.DataFrame(reconstruction_errors)\n\n    flag_columns = []\n    for column in sorted(errors_df['column_name'].unique()):\n        flag_column = f'{column}_flag'\n        errors_df[flag_column] = (errors_df.loc[errors_df['column_name'] == column, 'reconstruction_error'] &gt; THRESHOLD).astype(int)\n        flag_columns.append(flag_column)\n\n    errors_df_pivot = errors_df.pivot_table(index='ID', \n                                            columns='column_name', \n                                            values=flag_columns, \n                                            aggfunc='first')\n    errors_df_pivot.columns = [f'{col[1]}' for col in errors_df_pivot.columns]\n    errors_df_flat = errors_df_pivot.reset_index()\n\n    errors_df_flat['flag_list'] = errors_df_flat.loc[:, 'P1':'P' + str(len(flag_columns))].apply(lambda x: x.tolist(), axis=1).apply(lambda x: [int(i) for i in x])\n    return errors_df_flat[[\"ID\", \"flag_list\"]]\n\n\nC_DATA = test_data_processing(test_directory=\"./test/C\")\nD_DATA = test_data_processing(test_directory=\"./test/D\")\n\n#C_D_list = pd.concat([C_list, D_list])\n\nProcessing test files: 100%|██████████| 2920/2920 [01:03&lt;00:00, 46.20it/s]\nProcessing test files: 100%|██████████| 2738/2738 [00:53&lt;00:00, 51.20it/s]\n\n\n\nC_DATA\n\n&lt;torch.utils.data.dataloader.DataLoader at 0x7fe3305d42e0&gt;\n\n\n\nC_list = detect_anomaly(INFER_MODEL, C_DATA)\n#D_list = detect_anomaly(INFER_MODEL, test_directory=\"./D\")\n\n  0%|          | 0/5840 [00:00&lt;?, ?it/s]/tmp/ipykernel_2764838/3225321808.py:5: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.\n  with autocast():  # Mixed Precision 활성화\n  8%|▊         | 452/5840 [00:54&lt;10:53,  8.24it/s]\n\n\nKeyboardInterrupt: \n\n\n\nsample_submission = pd.read_csv(\"./sample_submission.csv\")\n# 매핑된 값으로 업데이트하되, 매핑되지 않은 경우 기존 값 유지\nflag_mapping = C_D_list.set_index(\"ID\")[\"flag_list\"]\nsample_submission[\"flag_list\"] = sample_submission[\"ID\"].map(flag_mapping).fillna(sample_submission[\"flag_list\"])\n\nsample_submission.to_csv(\"./baseline_submission.csv\", index=False)",
+    "crumbs": [
+      "Posts",
+      "01. Modeling",
+      "01. Anomaly Transfomer (1)"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "수로뻥~!",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\nDec 14, 2024\n\n\n01. Anomaly Transfomer (1)\n\n\nGC \n\n\n\n\nDec 12, 2024\n\n\n00. EDA (1)\n\n\nGC \n\n\n\n\nDec 11, 2024\n\n\n00. Anomaly Transfomer Basic\n\n\nGC \n\n\n\n\nAug 15, 2022\n\n\n00. Quarto Guide\n\n\nGC \n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "posts/01. Modeling/modeiling (1).html",
     "href": "posts/01. Modeling/modeiling (1).html",
     "title": "00. Anomaly Transfomer Basic",
@@ -43,13 +122,6 @@
       "01. Modeling",
       "00. Anomaly Transfomer Basic"
     ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "수로뻥~!",
-    "section": "",
-    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\nDec 12, 2024\n\n\n00. EDA (1)\n\n\nGC \n\n\n\n\nDec 11, 2024\n\n\n00. Anomaly Transfomer Basic\n\n\nGC \n\n\n\n\nAug 15, 2022\n\n\n00. Quarto Guide\n\n\nGC \n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/2023-07-31-00. Quarto Guide.html",
